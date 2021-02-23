@@ -8,8 +8,7 @@ const logger = require('koa-logger')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
-
-// error handler
+const { checkToken } = require('./routes/controllers/auth');
 onerror(app)
 
 // middlewares
@@ -30,6 +29,7 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
+app.use(checkToken)
 // routes
 app.use(index.routes())
 app.use(users.routes())
