@@ -61,7 +61,8 @@ exports.userLogin = async (ctx, next) => {
         ctx.body = {
             errcode: 0,
             msg: '登录成功！',
-            token
+            token,
+            data: res
         };
     }
 }
@@ -128,6 +129,30 @@ exports.updatePassword = async (ctx, next) => {
         }
     }
 }
+
+/**
+ * 获取用户列表
+ * */
+
+exports.userList = async (ctx, next) => {
+    let res = await db.users.findAndCountAll({
+        offset: (Number(ctx.query.page) - 1) * Number(ctx.query.size),
+        limit: Number(ctx.query.size)
+    })
+    if (res === null) {
+        ctx.body = {
+            errcode:-1,
+            msg:'该数据不存在！'
+        }
+    } else {
+        ctx.body = {
+            errcode:0,
+            msg:'查找成功！',
+            data:res
+        }
+    }
+}
+
  /**
  *删除
  */
@@ -161,25 +186,6 @@ exports.select = async (ctx, next) => {
         where:{
             id
         }
-    })
-    if (res === null) {
-        ctx.body = {
-            errcode:-1,
-            msg:'该数据不存在！'
-        }
-    } else {
-        ctx.body = {
-            errcode:0,
-            msg:'查找成功！',
-            data:res
-        }
-    }
-}
-
-exports.users = async (ctx, next) => {
-    let res = await db.users.findAndCountAll({
-        offset: (Number(ctx.query.page) - 1) * Number(ctx.query.size),
-        limit: Number(ctx.query.size)
     })
     if (res === null) {
         ctx.body = {

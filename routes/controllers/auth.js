@@ -44,9 +44,10 @@ exports.checkToken = async (ctx, next) => {
     } else {
         // 否则获取到token
         let token = ctx.header['authorization'] || ctx.request.headers["authorization"]
-        if ( token ) {
+        token = token.replace( "Bearer ", "" );
+        console.log(token, token === 'null', token !== null)
+        if ( token !== 'null' ) {
             // 如果有token的话就开始解析
-            token = token.replace( "Bearer ", "" );
             const tokenItem = jwt.verify( token, 'token' )
             let res = await db.users.findOne( {
                 where: {
@@ -56,7 +57,7 @@ exports.checkToken = async (ctx, next) => {
             // 判断用户是否存在
             if ( !res ) {
                 ctx.body = {
-                    status: -1,
+                    errcode: -1,
                     message: '该用户不存在！'
                 }
                 return
@@ -71,10 +72,16 @@ exports.checkToken = async (ctx, next) => {
                 await next()
             } else {
                 ctx.body = {
-                    status: 405,
+                    errcode: 405,
                     message: 'token 已过期，请重新登陆'
                 }
             }
+        } else {
+            ctx.body = {
+                errcode: 405,
+                message: "请登录！"
+            }
+            return
         }
     }
 }
