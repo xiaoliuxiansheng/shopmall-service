@@ -35,7 +35,6 @@ app.use(checkToken)
 // routes
 app.use(index.routes())
 app.use(users.routes())
-
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)

@@ -15,6 +15,7 @@ const Op = Sequelize.Op;
  */
  exports.userRegister = async (ctx, next) => {
     const {name, phone, password} = ctx.request.body;
+    console.log(name, phone, password)
     if ( !(name && phone && password)) {
         ctx.body = {
             errcode: -1,
@@ -24,7 +25,7 @@ const Op = Sequelize.Op;
     }
     const [user, created] = await db.users.findOrCreate({
         where:{phone},
-        default:{name, phone, password}
+        defaults:{name, phone, password}
     });
     if (!created) {
         ctx.body = {
